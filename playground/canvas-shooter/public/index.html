@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Shooter</title>
+
+  <style>
+      body {
+        margin: 0;
+        background-color: black;
+      }
+
+      canvas {
+        border: 1px solid #fff;
+      }
+  </style>
+
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+     
+  <canvas width="1500" height="950"></canvas>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js" integrity="sha512-cdV6j5t5o24hkSciVrb8Ki6FveC2SgwGfLE31+ZQRHAeSRxYhAQskLkq3dLm8ZcWe1N3vBOEYmmbhzf7NTtFFQ==" crossorigin="anonymous"></script>
+  
+  <script type="module">
+
+    import Game from './classes/Game.js'
+    import Projectile from './classes/Projectile.js'
+
+    import animate from './animate.js'
+
+    const socket = io()
+    
+    socket.on('connect', () => {
+        const game = new Game(1500, 950);
+        game.start();
+
+        const playerId = socket.id
+        console.log(`Player connected on Client with id: ${playerId}`)
+
+        game.addPlayer(playerId)
+
+        // const screen = document.getElementById('screen')
+        // renderScreen(screen, game, requestAnimationFrame, playerId)
+        addEventListener('click', event => {
+          const angle = Math.atan2(event.clientY - game.players[playerId].y, event.clientX - game.players[playerId].x);
+          const speed = 6;
+
+          const velocity = {
+            x: Math.cos(angle) * speed,
+            y: Math.sin(angle) * speed,
+          }
+
+          game.projectiles.push(new Projectile(game.players[playerId].x, game.players[playerId].y, 5, 'white', velocity));
+        });
+
+        addEventListener('keydown', e => {
+          if (game.players[playerId][e.key]) game.players[playerId][e.key]();
+        })
+
+    
+        animate(document, game, requestAnimationFrame);
+    })
+
+  </script>
+</body>
+</html>
