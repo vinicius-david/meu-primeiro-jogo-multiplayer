@@ -1,20 +1,22 @@
 import Player from './Player.js'
 import Enemy from './Enemy.js' 
+import Projectile from './Projectile.js';
+import Particle from './Particle.js';
 
 export default class Game {
   constructor(gameWidth, gameHeight) {
     this.width = gameWidth;
     this.height = gameHeight;
-  }
-  
-  start() {
+
     this.projectiles = [];
     this.enemies = [];
     this.particles = [];
     this.players = {};
-    
-    this.animationId;
 
+    this.animationId;
+  }
+  
+  start() {
     this.createEnemies();
   }
 
@@ -26,9 +28,25 @@ export default class Game {
     delete this.players[playerId];
   }
 
-  // updateState(game) {
-  //   this = game;
-  // }
+  setState(game) {
+    this.projectiles = game.projectiles.map(p => {
+      return new Projectile(p.x, p.y, p.radius, p.color, p.velocity)
+    })
+
+    this.enemies = game.enemies.map(e => {
+      return new Enemy(e.x, e.y, e.radius, e.color, e.velocity)
+    })
+
+    this.particles = game.particles.map(p => {
+      return new Particle(p.x, p.y, p.radius, p.color, p.velocity)
+    })
+    
+    for (const p in game.players) {
+      this.players[p] = new Player(game.players[p].x, game.players[p].y, game.players[p].radius, game.players[p].color, this.width, this.height);
+    }
+
+    this.animationId = game.animationId;
+  }
 
   createEnemies() {
     setInterval(() => {
@@ -47,7 +65,7 @@ export default class Game {
       const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
   
       const angle = Math.atan2(this.height / 2 - y, this.width / 2 - x);
-      const speed = 2.5;
+      const speed = 1;
   
       const velocity = { 
         x: Math.cos(angle) * speed,

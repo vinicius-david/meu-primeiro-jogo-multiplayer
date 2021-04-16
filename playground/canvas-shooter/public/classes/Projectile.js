@@ -14,9 +14,8 @@ export default class Projectile {
     c.fill();
   }
 
-  update(c) {
-    this.x = this.x + this.velocity.x;
-    this.y = this.y + this.velocity.y;
-    this.draw(c);
+  update() {
+    this.x = this.x + (this.velocity.x) * 0.25;
+    this.y = this.y + (this.velocity.y) * 0.25;
   }
 }

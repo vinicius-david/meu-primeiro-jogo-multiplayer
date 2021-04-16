@@ -20,7 +20,7 @@ export default class Player {
     c.fill();
   }
 
-  update(c) {
+  update() {
     if (this.x <= 0 + this.radius) {
       this.x = this.x + 5;
       this.velocity.x = 0;
@@ -43,39 +43,37 @@ export default class Player {
 
     this.velocity.x *= this.friction;
     this.velocity.y *= this.friction;
-
-    this.draw(c);
   }
 
   ArrowLeft() {
-    this.velocity.x -= 0.8;
+    this.velocity.x -= 1.5;
   }
 
   a() {
-    this.velocity.x -= 0.8;
+    this.velocity.x -= 1.5;
   }
 
   ArrowRight() {
-    this.velocity.x += 0.8;
+    this.velocity.x += 1.5;
   }
 
   d() {
-    this.velocity.x += 0.8;
+    this.velocity.x += 1.5;
   }
 
   ArrowUp() {
-    this.velocity.y -= 0.8;
+    this.velocity.y -= 1.5;
   }
 
   w() {
-    this.velocity.y -= 0.8;
+    this.velocity.y -= 1.5;
   }
 
   ArrowDown() {
-    this.velocity.y += 0.8;
+    this.velocity.y += 1.5;
   }
 
   s() {
-    this.velocity.y += 0.8;
+    this.velocity.y += 1.5;
   }
 }

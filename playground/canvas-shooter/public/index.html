@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canvas Shooter</title>
+  <title>Dalota</title>
 
   <style>
       body {
@@ -23,28 +23,25 @@
      
   <canvas width="1500" height="950"></canvas>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js" integrity="sha512-cdV6j5t5o24hkSciVrb8Ki6FveC2SgwGfLE31+ZQRHAeSRxYhAQskLkq3dLm8ZcWe1N3vBOEYmmbhzf7NTtFFQ==" crossorigin="anonymous"></script>
-  
   <script type="module">
 
     import Game from './classes/Game.js'
     import Projectile from './classes/Projectile.js'
 
-    import animate from './animate.js'
+    import drawAll from './draw.js'
 
     const socket = io()
     
     socket.on('connect', () => {
-        const game = new Game(1500, 950);
-        game.start();
+        let game = new Game(1500, 950);
 
         const playerId = socket.id
         console.log(`Player connected on Client with id: ${playerId}`)
 
-        game.addPlayer(playerId)
+        socket.on('setup', g => {
+          game.setState(g)
+        })
 
-        // const screen = document.getElementById('screen')
-        // renderScreen(screen, game, requestAnimationFrame, playerId)
         addEventListener('click', event => {
           const angle = Math.atan2(event.clientY - game.players[playerId].y, event.clientX - game.players[playerId].x);
           const speed = 6;
@@ -55,14 +52,20 @@
           }
 
           game.projectiles.push(new Projectile(game.players[playerId].x, game.players[playerId].y, 5, 'white', velocity));
+
+          socket.emit('projectile', game.projectiles)
         });
 
         addEventListener('keydown', e => {
           if (game.players[playerId][e.key]) game.players[playerId][e.key]();
+          socket.emit('player', [game.players[playerId].velocity, playerId])
         })
 
+        socket.on('update', g => {
+          game.setState(g)
+        })
     
-        animate(document, game, requestAnimationFrame);
+        drawAll(document, game, requestAnimationFrame, socket);
     })
 
   </script>

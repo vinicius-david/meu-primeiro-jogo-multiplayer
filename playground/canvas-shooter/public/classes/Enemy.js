@@ -14,9 +14,8 @@ export default class Enemy {
     c.fill();
   }
 
-  update(c) {
+  update() {
     this.x = this.x + this.velocity.x;
     this.y = this.y + this.velocity.y;
-    this.draw(c);
   }
 }

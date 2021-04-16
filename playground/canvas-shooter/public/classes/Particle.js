@@ -19,12 +19,11 @@ export default class Particle {
     c.restore();
   }
 
-  update(c) {
+  update() {
     this.velocity.x *= this.friction;
     this.velocity.y *= this.friction;
     this.x = this.x + this.velocity.x;
     this.y = this.y + this.velocity.y;
     this.alpha -= 0.01;
-    this.draw(c);
   }
 }
